@@ -4,19 +4,19 @@
 // File name: projects/01/Mux4Way16.hdl
 
 /**
- * 4-way 16-bit multiplexor:
+ * 4-way multiplexor:
  * out = a if sel == 00
  *       b if sel == 01
  *       c if sel == 10
  *       d if sel == 11
  */
 
-CHIP Mux4Way16 {
-    IN a[16], b[16], c[16], d[16], sel[2];
-    OUT out[16];
-
-    PARTS:
-	Mux16(a=a, b=b, sel=sel[0], out=sel1);
-	Mux16(a=c, b=d, sel=sel[0], out=sel2);
-	Mux16(a=sel1, b=sel2, sel=sel[1], out=out);
+CHIP Mux4Way {
+	IN a, b, c, d, sel[2];
+	OUT out;
+	
+	PARTS:
+	Mux(a=a, b=b, sel=sel[0], out=sel1);
+	Mux(a=c, b=d, sel=sel[0], out=sel2);
+	Mux(a=sel1, b=sel2, sel=sel[1], out=out);
 }

@@ -13,5 +13,9 @@ CHIP Xor {
     OUT out;
 
     PARTS:
-    // Put your code here:
+    //a xor b = (a or b) and (not (a and b))
+	And(a=a, b=b, out=aandb);
+	Not(in=aandb, out=notaandb);
+	Or(a=a, b=b, out=aorb);
+	And(a=aorb, b=notaandb, out=out);
 }
