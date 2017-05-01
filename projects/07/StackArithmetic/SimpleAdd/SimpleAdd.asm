@@ -22,7 +22,7 @@ A=M
 A=A-1
 D=M
 A=A-1
-M=D+M
+M=M+D
 @R0
 M=M-1
 
