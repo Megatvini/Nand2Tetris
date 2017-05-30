@@ -1,0 +1,52 @@
+class List {
+    field Point point;
+    field List next;
+
+    constructor List new(Point car, List cdr) {
+        let point = car;
+        let next = cdr;
+        return this;
+    }
+	
+    method Point getPoint() { return point; }
+    method List getNext() { return next; }
+	method void setNext(List aNext) {let next=aNext; return;}
+	
+	method Point getTailPoint() {
+		var List n;
+		let n = next;
+		
+		while (~(n.getNext() = null)) {
+            let n = n.getNext();
+        }
+		return n.getPoint();
+	}
+	
+	method void removeTail() {
+		var List cur;
+		var List n;
+		
+		let cur = this;
+		let n = getNext();
+		
+		while (~(n.getNext() = null)) {
+			let cur = n;
+            let n = n.getNext();
+        }
+		
+		do cur.setNext(null);
+		do n.dispose();
+		
+		return;
+	}
+
+    method void dispose() {
+        if (~(next = null)) {
+			do point.dispose();
+            do next.dispose();
+        }
+		
+        do Memory.deAlloc(this);
+        return;
+    }
+}

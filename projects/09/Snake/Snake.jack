@@ -1,0 +1,106 @@
+class Snake {
+	field List snakeBody;
+	field int squareSizeInPixels;
+	field int worldWidth;
+	field int worldHeight;
+	field boolean grow;
+	
+	constructor Snake new(Point aHeadPosition, int initialLength, int aSquareSizeInPixels, int width, int height) {
+		let squareSizeInPixels = aSquareSizeInPixels;
+		let worldWidth = width;
+		let worldHeight = height;
+		let grow = false;
+		do initSnakeBody(aHeadPosition, initialLength);
+		do aHeadPosition.dispose();
+		do drawSnake(initialLength);
+		return this;
+	}
+	
+	method void initSnakeBody(Point aHeadPosition, int initialLength) {
+		var Point curPoint;
+		var int i;
+		let i = initialLength - 1;
+		while (~(i < 0)) {
+			let curPoint = Point.new(aHeadPosition.getX() - i, aHeadPosition.getY());
+			let snakeBody = List.new(curPoint, snakeBody);
+			do curPoint.setX(curPoint.getX() + 1);
+			let i = i - 1;
+		}
+		return;
+	}
+	
+	method Point getNewHeadPosition(int direction) {
+		var Point head;
+		var Point res;
+		let head = snakeBody.getPoint();
+		let res = Point.new(head.getX(), head.getY());
+		
+		if (direction = 1) { // up
+			do res.setY(MathUtils.remainder(res.getY() - 1, worldHeight));
+		}
+		
+		if (direction = 2) { // down
+			do res.setY(MathUtils.remainder(res.getY() + 1, worldHeight));
+		}
+		
+		if (direction = 3) { //left
+			do res.setX(MathUtils.remainder(res.getX() - 1, worldWidth));
+		}
+		
+		if (direction = 4) { //right
+			do res.setX(MathUtils.remainder(res.getX() + 1, worldWidth));
+		}
+		
+		return res;
+	}
+	
+	method void move(int direction) {
+		var Point newHeadPosition;
+		var Point tailPosition;
+				
+		let newHeadPosition = getNewHeadPosition(direction);
+		
+		if (~(grow)) {
+			let tailPosition = snakeBody.getTailPoint();
+			do DrawUtils.clearSquare(tailPosition.getX(), tailPosition.getY(), squareSizeInPixels);
+			do snakeBody.removeTail();
+		}
+		
+		let snakeBody = List.new(newHeadPosition, snakeBody);
+		do DrawUtils.drawSquare(newHeadPosition.getX(), newHeadPosition.getY(), squareSizeInPixels);
+		
+		let grow = false;
+		
+		return;
+	}
+	
+	method Point getHeadPosition() {
+		return snakeBody.getPoint();
+	}
+	
+	method List getBody() {
+		return snakeBody;
+	}
+	
+	method void drawSnake(int length) {
+		var List curList;
+		var Point point;
+		let curList = snakeBody;
+		while (~(curList = null)) {
+			let point = curList.getPoint();
+			do DrawUtils.drawSquare(point.getX(), point.getY(), squareSizeInPixels);
+			let curList = curList.getNext();
+		}
+		return;
+	}
+	
+	method void grow() {
+		let grow = true;
+		return;
+	}
+
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

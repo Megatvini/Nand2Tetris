@@ -1,0 +1,147 @@
+class SnakeGameBoard {
+	field int width;
+	field int height;
+	field Snake snake;
+	field Random random;
+	field Point capsule;
+	field int direction;
+	field int pixelsPerSquare;
+	
+	constructor SnakeGameBoard new(int squareSizeInPixels) {
+		var Point snakeHead;
+		do drawBorders();
+		let width = (512 / squareSizeInPixels);
+		let height = (239 / squareSizeInPixels);
+		let snakeHead = Point.new(width/2, height/2);
+		let snake = Snake.new(snakeHead, 5, squareSizeInPixels, width, height);
+		let random = Random.new(6445);
+		let direction = 4;
+		let capsule = Point.new(0, 0);
+		do createCapsule();
+		let pixelsPerSquare = squareSizeInPixels;
+		return this;
+	}
+	
+	method void setDirection(int aDirection) {
+		if (aDirection = 1) {
+			if (~(direction = 2)) {
+				let direction = aDirection;
+			}
+		}
+		
+		if (aDirection = 2) {
+			if (~(direction = 1)) {
+				let direction = aDirection;
+			}
+		}
+		
+		if (aDirection = 3) {
+			if (~(direction = 4)) {
+				let direction = aDirection;
+			}
+		}
+
+		if (aDirection = 4) {
+			if (~(direction = 3)) {
+				let direction = aDirection;
+			}
+		}
+
+		return;
+	}
+	
+	method void drawBorders() {
+		do Screen.drawLine(0, 240, 511, 240);
+		return;
+	}
+	
+	method void tick() {
+		do snake.move(direction);
+		do random.shake(direction);
+		return;
+	}
+	
+	method Snake getSnake() {
+		return snake;
+	}
+	
+	method boolean isFree(int x, int y) {
+		var Point p;
+		var List l;
+		let l = snake.getBody();
+		while (~(l = null)) {
+			let p = l.getPoint();
+			if (p.getX() = x) {
+				if (p.getY() = y) {
+					return false;
+				}
+			}
+			let l = l.getNext();
+		}
+		return true;
+	}
+	
+	method void createCapsule() {
+		var int x;
+		var int y;
+		let x = random.nextInt(width);
+		let y = random.nextInt(height);
+		while (~(isFree(x, y))) {
+			let x = random.nextInt(width);
+			let y = random.nextInt(height);
+		}
+		
+		do capsule.setX(x);
+		do capsule.setY(y);
+		do DrawUtils.drawSquare(x, y, pixelsPerSquare);
+		
+		return;
+	}
+	
+	method void clearCapsule() {
+		return;
+	}
+	
+	method boolean checkCapsuleEaten() {
+		var List body;
+		var Point head;
+		let body = snake.getBody();
+		let head = body.getPoint();
+		if (head.getX() = capsule.getX()) {
+			if (head.getY() = capsule.getY()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	method boolean checkSnakeDied() {
+		var List snakeBody;
+		var Point head;
+		var List n;
+		var Point curPoint;
+		let snakeBody = snake.getBody();
+		let head = snakeBody.getPoint();
+		let n = snakeBody.getNext();
+		
+		while (~(n = null)) {
+			let curPoint = n.getPoint();
+			if (curPoint.getX() = head.getX()) {
+				if (curPoint.getY() = head.getY()) {
+					return true;
+				}
+			}
+			let n = n.getNext();
+		}
+		
+		return false;
+	}
+
+	method void dispose() {
+		do snake.dispose();
+		do random.dispose();
+		do capsule.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

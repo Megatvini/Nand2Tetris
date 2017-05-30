@@ -1,0 +1,10 @@
+class MathUtils {
+	function int remainder(int a, int b) {
+		var int res;
+		let res = a - ((a/b) * b);
+		if (res < 0) {
+			let res = res + b;
+		}
+		return res;
+	}
+}

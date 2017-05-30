@@ -1,0 +1,82 @@
+class GameController {
+	field SnakeGameBoard gameBoard;
+	field HeaderDisplay headerDisplay;
+	
+	constructor GameController new() {
+		let gameBoard = SnakeGameBoard.new(13);
+		let headerDisplay = HeaderDisplay.new();
+		return this;
+	}
+	
+	method void run() {
+		var char keyPressed;
+		var int direction;
+		
+		var Snake snake;
+		var Point headPosition;
+		
+		do gameBoard.createCapsule();
+
+		let direction = 0;
+		
+		while (-1) {
+			let keyPressed = Keyboard.keyPressed();
+			
+			if (keyPressed = 131) { let direction = 1; }   // up arrow
+			if (keyPressed = 133) { let direction = 2; }   // down arrow
+			if (keyPressed = 130) { let direction = 3; }   // left arrow
+			if (keyPressed = 132) { let direction = 4; }   // right arrow
+			if (keyPressed = 0) {let direction = 0;}
+			
+			if (direction > 0) {
+				do gameBoard.setDirection(direction);
+			}
+			
+			do gameBoard.tick();
+			
+			let snake  = gameBoard.getSnake();
+			let headPosition = snake.getHeadPosition();
+						
+			if (gameBoard.checkCapsuleEaten()) {
+				do reactCapsuleEaten();
+			}
+			
+			if (gameBoard.checkSnakeDied()) {
+				do reactSnakeDied();
+				return;
+			}
+			
+			do Sys.wait(50);
+		}
+		return;
+	}
+	
+	method void reactSnakeDied() {
+		do Screen.clearScreen();
+		do Output.moveCursor(12, 25);
+		do Output.printString("YOU LOST! SCORE: ");
+		do Output.printInt(headerDisplay.getScore());
+		do Output.moveCursor(14, 25);
+		do Output.printString(" Press q to exit");
+		while (~(Keyboard.keyPressed() = 81)) {}
+		return;
+	}
+	
+	method void reactCapsuleEaten() {
+		var Snake snake;
+		
+		do gameBoard.clearCapsule();
+		do headerDisplay.increaseScore(1);
+		let snake = gameBoard.getSnake();
+		do snake.grow();
+		do gameBoard.createCapsule();
+		return;
+	}
+	
+	method void dispose() {
+		do gameBoard.dispose();
+		do headerDisplay.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

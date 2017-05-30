@@ -1,0 +1,28 @@
+class Random {
+	field int seed;
+	
+	constructor Random new(int aSeed) {
+		let seed = aSeed;
+		return this;
+	}
+
+	method int nextInt(int bound) {
+		var int res;
+		let res = seed;
+		let res = MathUtils.remainder(res * 7621 + 25, 32767);
+		let res = MathUtils.remainder(res, bound);
+		let seed = res;
+		return res;
+	}
+	
+	method void shake(int someNum) {
+		let seed = nextInt(123);
+		let seed = seed + someNum;
+		return;
+	}
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}

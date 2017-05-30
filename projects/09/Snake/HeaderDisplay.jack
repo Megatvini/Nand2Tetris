@@ -1,0 +1,36 @@
+class HeaderDisplay {
+	field int score;
+	field String scoreLabel;
+	field int cursorLineY;
+	
+	constructor HeaderDisplay new() {
+		let score = 0;
+		let scoreLabel = "Score: ";
+		let cursorLineY = 22;
+		do Output.moveCursor(cursorLineY, 0);
+		do Output.printString(scoreLabel);
+		do displayScore();
+		return this;
+	}
+	
+	method int getScore() {
+		return score;
+	}
+	
+	method void increaseScore(int by) {
+		let score = score + by;
+		do displayScore();
+		return;
+	}
+	
+	method void displayScore() {
+		do Output.moveCursor(cursorLineY, scoreLabel.length());
+		do Output.printInt(score);
+		return;
+	}
+	
+	method void dispose() {
+		do Memory.deAlloc(this);
+		return;
+	}
+}
