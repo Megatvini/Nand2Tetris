@@ -1,0 +1,14 @@
+../../../tools/TextComparer.sh ../ArrayTest/MainT.xml ../ArrayTest/MainT1.xml
+../../../tools/TextComparer.sh ../ArrayTest/Main.xml ../ArrayTest/Main1.xml
+../../../tools/TextComparer.sh ../ExpressionLessSquare/SquareT.xml ../ExpressionLessSquare/SquareT1.xml
+../../../tools/TextComparer.sh ../ExpressionLessSquare/Square.xml ../ExpressionLessSquare/Square1.xml
+../../../tools/TextComparer.sh ../ExpressionLessSquare/SquareGame.xml ../ExpressionLessSquare/SquareGame1.xml
+../../../tools/TextComparer.sh ../ExpressionLessSquare/SquareGameT.xml ../ExpressionLessSquare/SquareGameT1.xml
+../../../tools/TextComparer.sh ../ExpressionLessSquare/Main.xml ../ExpressionLessSquare/Main.xml
+../../../tools/TextComparer.sh ../ExpressionLessSquare/MainT.xml ../ExpressionLessSquare/MainT.xml
+../../../tools/TextComparer.sh ../Square/Main.xml ../Square/Main1.xml
+../../../tools/TextComparer.sh ../Square/MainT.xml ../Square/MainT1.xml
+../../../tools/TextComparer.sh ../Square/SquareGame.xml ../Square/SquareGame.xml
+../../../tools/TextComparer.sh ../Square/SquareGameT.xml ../Square/SquareGameT.xml
+../../../tools/TextComparer.sh ../Square/Square.xml ../Square/Square1.xml
+../../../tools/TextComparer.sh ../Square/SquareT.xml ../Square/SquareT1.xml
