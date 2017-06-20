@@ -10,34 +10,146 @@
  * the screen is indexed (0,0).
  */
 class Screen {
+	static int screen, screenEnd;
+	static int height, width;
+	static boolean curColor;
 
     /** Initializes the Screen. */
     function void init() {
+		let screen = 16384;
+		let screenEnd = 24576;
+		let height = 256;
+		let width = 512;
+		let curColor = true;
+		return;
     }
 
     /** Erases the entire screen. */
     function void clearScreen() {
+		var int i;
+		let i = screen;
+		while (i < screenEnd) {
+			do Memory.poke(i, 0);
+			let i = i + 1;
+		}
+		return;
     }
 
     /** Sets the current color, to be used for all subsequent drawXXX commands.
      *  Black is represented by true, white by false. */
     function void setColor(boolean b) {
+		let curColor = b;
+		return;
     }
 
     /** Draws the (x,y) pixel, using the current color. */
     function void drawPixel(int x, int y) {
+		var int bitIndex;
+		var int registersPerLine;
+		var int address;
+		var int val;
+		var int i;
+		
+		let registersPerLine = width / 16;
+		
+		let address = screen + (y*registersPerLine) + (x/16);
+		let bitIndex = x - ((x/16) * 16);
+
+		let val = 1;
+		let i = 0;
+		while (i < bitIndex) {
+			let val = val + val;
+			let i = i + 1;
+		}
+		
+		if (curColor) {
+			do Memory.poke(address, Memory.peek(address) | val);
+		} else {
+			do Memory.poke(address, Memory.peek(address) & (-1 - val));
+		}
+		
+		return;
     }
+	
+	function int getDir(int one, int two) {
+		if (one = two) {
+			return 0;
+		}
+		if (one < two) {
+			return 1;
+		}
+		return -1;
+	}
 
     /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
     function void drawLine(int x1, int y1, int x2, int y2) {
+		//0,220,511,220
+		var int curX, curY, diff, dirX, dirY, absDX, absDY;
+		
+		let curX = x1;
+		let curY = y1;
+		
+		let dirX = Screen.getDir(x1, x2);
+		let dirY = Screen.getDir(y1, y2);
+		
+		do Screen.drawPixel(curX, curY);
+		
+		if (dirX = 0) {
+			while (~(curY = y2)) {
+				do Screen.drawPixel(curX, curY);
+				let curY = curY + dirY;
+			}
+			do Screen.drawPixel(curX, curY);
+			return;
+		}
+		
+		if (dirY = 0) {
+			while (~(curX = x2)) {
+				do Screen.drawPixel(curX, curY);
+				let curX = curX + dirX;
+			}
+			do Screen.drawPixel(curX, curY);
+			return;
+		}
+		
+		let absDX = Math.abs(x2 - x1);
+		let absDY = Math.abs(y2 - y1);
+		let diff = 0;
+		while ((~(curX = x2) | (~(curY = y2)))) {
+			if (diff < 0) {
+				let curX = curX + dirX;
+				let diff = diff + absDY;
+			} else {
+				let curY = curY + dirY;
+				let diff = diff - absDX;
+			}
+			do Screen.drawPixel(curX, curY);
+		}
+		
+		return;
     }
 
     /** Draws a filled rectangle whose top left corner is (x1, y1)
      * and bottom right corner is (x2,y2), using the current color. */
     function void drawRectangle(int x1, int y1, int x2, int y2) {
+		var int i;
+		let i = y1;
+		while (~(i > y2)) {
+			do Screen.drawLine(x1, i, x2, i);
+			let i = i + 1;
+		}
+		return;
     }
 
     /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
     function void drawCircle(int x, int y, int r) {
+		var int dy, tmp;
+		let dy = -r;
+		while (dy < r) {
+			let tmp = Math.sqrt((r*r) - (dy*dy));
+			do Screen.drawLine(x - tmp, y + dy, x + tmp, y + dy); 
+			let dy = dy + 1;
+		}
+		return;
     }
 }

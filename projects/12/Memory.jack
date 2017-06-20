@@ -9,26 +9,71 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
+	static Array ram;
+	static int freeList;
 
     /** Initializes the class. */
     function void init() {
+		let ram = 0;
+		let freeList = 2048;
+		let ram[freeList] = 14336;
+		let ram[freeList + 1] = 0;
+		return;
     }
 
     /** Returns the RAM value at the given address. */
     function int peek(int address) {
+		return ram[address];
     }
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
+		let ram[address] = value;
+		return;
     }
 
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
+		var int curBlock;
+		var int res;
+		if ((freeList + size) > 16383) {
+			return 0;
+		}
+		let res = freeList;
+		let freeList = freeList + size;
+		return res;
     }
-
+	
+	function int findPreviousBlock(int curBlock) {
+		var int prevBlock;
+		let prevBlock = freeList;
+		while (~(ram[prevBlock + 1] = curBlock)) {
+			let prevBlock = ram[prevBlock + 1];
+		}
+		return prevBlock;
+	}
+	
+	function void removeFromFreeList(int curBlock, int size) {
+		var int prevBlock;
+		if (ram[curBlock] = (size + 3)) {
+			let prevBlock = Memory.findPreviousBlock(curBlock);
+			if (prevBlock = 0) { return;}
+			let ram[prevBlock + 1] = ram[curBlock + 1];
+		} else {
+			let ram[curBlock] = ram[curBlock] - (size + 1);
+		}
+	
+		return;
+	}
+	
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
-    }    
+		var int tmp;
+		let tmp = freeList;
+		let freeList = o - 1;
+		let ram[o] = tmp;
+		return;
+    }
 }

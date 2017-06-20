@@ -11,10 +11,15 @@ class Math {
 
     /** Initializes the library. */
     function void init() {
+		return;
     }
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+		if (x < 0) {
+			return -x;
+		}
+		return x;
     }
 
     /** Returns the product of x and y. 
@@ -23,7 +28,44 @@ class Math {
      *  the Jack expressions x*y and multiply(x,y) return the same value.
      */
     function int multiply(int x, int y) {
+		var int res;
+		var int shiftedX;
+		var int index;
+		var int curBit;
+		
+		let res = 0;
+		let index = 0;
+		let shiftedX = x;
+		while (index < 16) {
+			let curBit = Math.getBit(y, index);
+			if (curBit = 1) {
+				let res = res + shiftedX;
+			}
+			let shiftedX = shiftedX + shiftedX;
+			let index = index + 1;
+		}
+		return res;
     }
+	
+	function int getBit(int num, int bitIndex) {
+		var int tmp;
+		var int i;
+		
+		let tmp = 1;
+		let i = 0;
+		while (i < bitIndex) {
+			let tmp = tmp + tmp;
+			let i = i + 1;
+		}
+		
+		let tmp = tmp & num;
+		
+		if (tmp = 0) {
+			return 0;
+		}
+		
+		return 1;
+	}
 
     /** Returns the integer part of x/y.
      *  When a Jack compiler detects the multiplication operator '/' in the 
@@ -31,17 +73,82 @@ class Math {
      *  the Jack expressions x/y and divide(x,y) return the same value.
      */
     function int divide(int x, int y) {
+		var int resSign;
+		var int res;
+		
+		let resSign = 1;
+		
+		if (x < 0) {
+			let resSign = -resSign;
+		}
+		
+		if (y < 0) {
+			let resSign = -resSign;
+		}
+		
+		let x = Math.abs(x);
+		let y = Math.abs(y);
+		
+		let res = Math.recursiveDivide(x, y);
+		
+		return resSign * res;
     }
+	
+	function int recursiveDivide(int x, int y) {
+		var int q;
+		
+		if (y < 0) {
+			return 0;
+		}
+		
+		if (y > x) {
+			return 0;
+		}
+		
+		let q = Math.recursiveDivide(x, y + y);
+		if ((x - (2 * q * y)) < y) {
+			return q + q;
+		}
+		
+		return (q + q + 1);
+	}
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+		var int res;
+		var int inc;
+		var int tmp;
+		
+		let inc = 128; // 2 ^ 7
+		let res = 0;
+		while (inc > 0) {
+			let tmp = res + inc;
+			if (tmp < 182) {
+				if (~(tmp * tmp > x)) {
+					let res = res + inc;
+				}
+			}
+			let inc = inc / 2;
+		}
+		
+		return res;
     }
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+		if (a > b) {
+			return a;
+		} else {
+			return b;
+		}
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+		if (a > b) {
+			return b;
+		} else {
+			return a;
+		}
     }
 }
